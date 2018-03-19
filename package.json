@@ -1,0 +1,59 @@
+{
+  "name": "mini-game-framework",
+  "version": "1.0.0",
+  "description": "min-game",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "webpack --config build/webpack.config.js",
+    "release": "webpack -p --config build/webpack.config.js",
+    "dev": "webpack --watch --config build/webpack.config.js",
+    "test": "jest test/*",
+    "cov": "jest test/* --coverage --silent"
+  },
+  "keywords": [
+    "min-game"
+  ],
+  "author": "notonlysuccess",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-stage-0": "^6.5.0",
+    "copy-webpack-plugin": "^4.1.1",
+    "eslint": "^3.4.0",
+    "eslint-friendly-formatter": "^2.0.6",
+    "eslint-loader": "^1.5.0",
+    "eslint-plugin-jest": "^20.0.3",
+    "glob": "^7.0.5",
+    "jest-cli": "^20.0.4",
+    "path": "^0.12.7",
+    "webpack": "^2.6.1",
+    "mocha": "^5.0.1"
+  },
+  "dependencies": {
+    "eventemitter2": "^4.1.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "moduleDirectories": [
+      "node_modules",
+      "src",
+      "vendor",
+      "src/game"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text",
+      "text-summary"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/src/game/component",
+      "/src/utils/math",
+      "/vendor",
+      "./test/*",
+      "/node_modules/"
+    ]
+  }
+}

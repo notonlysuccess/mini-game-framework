@@ -1,0 +1,5 @@
+export default {
+  SUCCESS: 0,
+  ERR_SESSION_TIMEOUT: 101,
+  ERR_BAD_SESSION: 102,
+}
