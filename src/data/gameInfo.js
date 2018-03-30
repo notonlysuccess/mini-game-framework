@@ -1,21 +1,29 @@
 import Data from './data'
-import config from 'config/data'
 import Network from 'network'
+import config from 'config/data'
+import AssetsLoader from 'utils/assetsLoader'
+import DataCenter from './dataCenter'
+import {
+  random,
+  shuffle,
+} from 'utils'
 
-/**
- * session
- * openid
- */
-export default class GameInfo extends Data {
+export default class GameInfoData extends Data {
   constructor() {
     super()
+    this._storageKey = config.GAME_INFO
+  }
 
-    this._storageKey = config.SESSION
+  _getDefaultData() {
+    return {
+    }
   }
 
   _fetch(cb) {
     Network.getGameInfo(data => {
-      cb(data)
+      if (data) {
+        cb(data)
+      }
     })
   }
 }

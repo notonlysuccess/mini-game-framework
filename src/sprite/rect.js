@@ -6,20 +6,29 @@ export default class Rect extends Sprite {
     value: 0,
     draw: true
   }, {
-    key: 'brush',
+    key: 'fillStyle',
     draw: true,
-    value: {
-      fillStyle: '#FFFFFF'
-    }
   }, {
-    key: 'pen',
+    key: 'strokeStyle',
+    draw: true,
+  }, {
+    key: 'lineWidth',
     draw: true
   }, {
     key: 'corners',
     draw: true,
   }, {
-    key: 'shadow',
-    draw: true
+    key: 'shadowRatioX',
+    draw: true,
+    value: 0
+  }, {
+    key: 'shadowRatioY',
+    draw: true,
+    value: 0
+  }, {
+    key: 'shadowStyle',
+    draw: true,
+    value: '#FFFFFF'
   }]
   constructor() {
     super()
@@ -36,12 +45,14 @@ export default class Rect extends Sprite {
 
   draw() {
     this.graphics.clear()
+    if (this._shadowRatioX || this._shadowRatioY) {
+      this._drawRect(this._shadowRatioX * this.width, this._shadowRatioY * this.height, this.width, this.height, this._radius, this._shadowStyle)
+    }
+    this._drawRect(0, 0, this.width, this.height, this._radius, this._fillStyle, this._strokeStyle, this._lineWidth)
+  }
 
+  _drawRect(x, y, width, height, radius, fillStyle, strokeStyle, lineWidth) {
     const pathes = []
-    const radius = this._radius
-    const width = this.width
-    const height = this.height
-
     if (this._corners & 1) {
       pathes.push(
         ['moveTo', 0, radius],
@@ -75,6 +86,18 @@ export default class Rect extends Sprite {
       pathes.push(['lineTo', 0, height])
     }
     pathes.push(['closePath'])
-    this.graphics.drawPath(0, 0, pathes, this._brush, this._pen, this._shadow)
+    let brush, pen
+    if (fillStyle) {
+      brush = {
+        fillStyle
+      }
+    }
+    if (strokeStyle || lineWidth) {
+      pen = {}
+      strokeStyle && (pen.strokeStyle = strokeStyle)
+      lineWidth && (pen.lineWidth = lineWidth)
+    }
+
+    this.graphics.drawPath(x, y, pathes, brush, pen)
   }
 }

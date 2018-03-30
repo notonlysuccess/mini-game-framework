@@ -1,6 +1,7 @@
 import GamePanel from './gamePanel'
 import WelcomePanel from './welcomePanel'
 import AnimationPanel from './animationPanel'
+import RankPanel from './rankPanel'
 
 export default class PanelManager {
   static _panels = []
@@ -9,6 +10,7 @@ export default class PanelManager {
     'game': GamePanel,
     'welcome': WelcomePanel,
     'animation': AnimationPanel,
+    'rank': RankPanel
   }
 
   static destroy() {

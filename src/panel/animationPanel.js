@@ -10,19 +10,14 @@ const RECT = new Scale({
   y: 800,
   width: 300,
   height: 300,
-  brush: {
-    fillStyle: '#FF0000'
-  },
-  alpha: 0.01
+  fillStyle: '#FF0000',
 })
 const CIRCLE = new Scale({
   x: 100,
   y: 800,
   width: 300,
   height: 300,
-  brush: {
-    fillStyle: '#00FF00'
-  }
+  fillStyle: '#00FF00',
 }, RECT)
 
 export default class AnimationPanel extends Panel {
@@ -35,20 +30,12 @@ export default class AnimationPanel extends Panel {
     const rect = new Rect(RECT)
     this.addChild(rect)
     rect.addChild(new Circle(CIRCLE))
-    rect.addAnimation({
+    rect.playOnce({
       changedValue: {
         y: -200,
       },
       duration: 1000,
       timeFunction: 'easeOutBounce'
     })
-    rect.addAnimation({
-      changedValue: {
-        alpha: 1
-      },
-      duration: 1000,
-      // timeFunction: 'easeOutBounce'
-    })
-    rect.startAnimation()
   }
 }

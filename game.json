@@ -5,6 +5,5 @@
     "uploadFile": 60000,
     "downloadFile": 60000
   },
-  "pages": ["index"],
-  "openDataContext": "open"
+  "pages": ["index"]
 }

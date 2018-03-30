@@ -5,8 +5,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    'game': path.resolve(__dirname, '../src/index.js'),
-    'open/index': path.resolve(__dirname, '../src/open/index.js')
+    'game': path.resolve(__dirname, '../src/index.js')
   },
   output: {
     path: path.resolve(__dirname, '../dist'),

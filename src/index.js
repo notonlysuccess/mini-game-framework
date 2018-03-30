@@ -1,14 +1,19 @@
 import 'weapp-adapter.js'
-import 'laya.core.min.js'
-import 'laya.ui.min.js'
-import 'laya.wxmini.min.js'
-import config from 'config'
+import 'laya.core.js'
+import 'laya.ui.js'
+import 'laya.wxmini.js'
 
 Laya.MiniAdpter.init()
+
+import config from 'config'
+
 Laya.init(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
 
-import onShow from 'onShow'
-import onHide from 'onHide'
+import onShow from './onShow'
+import onHide from './onHide'
+import Audio from 'audio'
+
+Audio.init()
 
 wx.onShow(options => {
   onShow(options)

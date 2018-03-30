@@ -12,10 +12,11 @@ export default class SessionData extends Data {
 
     this._storageKey = config.SESSION
     this._onlyFetchNoLocalData = true
+    this._fetchEveryTime = true
   }
 
   _fetch(cb) {
-    Network.login(data => {
+    Network.login(0, data => {
       cb(data)
     })
   }

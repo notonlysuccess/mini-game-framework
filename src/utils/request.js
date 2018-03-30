@@ -1,8 +1,8 @@
 import DataCenter from 'data/dataCenter'
 import resCode from 'config/resCode'
 
-const RETRY_INTERVAL = 5000
-const MAX_RETRY_TIME = 10
+const RETRY_INTERVAL = 10000
+const MAX_RETRY_TIME = 5
 const tryAgain = (object, err, retryTime) => {
   ++retryTime
   console.error(`${err} ${object.url} retry time: ${retryTime}`)
@@ -22,6 +22,7 @@ const tryRequest = (object, retryTime) => {
     method: 'POST',
     data: object.data,
     success: res => {
+      // res.data.code = resCode.ERR_SESSION_TIMEOUT
       if (res.statusCode !== 200) {
         tryAgain(object, `[Network] req: ${JSON.stringify(object)}, statusCode: ${res.statusCode}`, retryTime)
       } else if (!res.data) {
@@ -30,15 +31,21 @@ const tryRequest = (object, retryTime) => {
         DataCenter.getNetworkData('session', data => {
           if (data) {
             object.data.session = data.session
-            tryAgain(object, `[Network] session timeout`, retryTime)
+            if (object.sessionTimeout) {
+              object.sessionTimeout()
+            } else {
+              tryAgain(object, `[Network] session timeout`, retryTime)
+            }
           }
         })
+      } else if (res.data.code) {
+        tryAgain(object, `[Network] req: ${JSON.stringify(object)}, code: ${res.data.code}`, retryTime)
       } else {
-        object.success(res.data)
+        object.success(res.data.data)
       }
     },
     fail: res => {
-      tryAgain(object, `[Networkd] request failed req:${JSON.stringify(object)}, res: ${JSON.stringify(res)}`, retryTime)
+      tryAgain(object, `[Network] request failed req:${JSON.stringify(object)}, res: ${JSON.stringify(res)}`, retryTime)
     }
   })
 }
