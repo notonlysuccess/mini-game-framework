@@ -1,6 +1,7 @@
 import M from './math'
 import emitter from './emitter'
 import Scale from './scale'
+import alphaColor from './alphaColor'
 
 const Point = M.Point
 const Line = M.Line
@@ -16,4 +17,5 @@ export {
   Polygon,
   emitter,
   Scale,
+  alphaColor
 }

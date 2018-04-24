@@ -3,7 +3,7 @@ import timeFunctions from './timeFunctions'
 
 let cnt= 0
 export default class Sprite extends Laya.Sprite {
-  _sameKeyLength = 5
+  _sameKeyLength = 7
   _baseArgs = [{
     key: 'x',
     value: 0,
@@ -25,6 +25,8 @@ export default class Sprite extends Laya.Sprite {
   }, {
     key: 'zOrder',
     value: 0
+  }, {
+    key: 'rotation',
   }]
 
   _args = []
@@ -160,8 +162,8 @@ export default class Sprite extends Laya.Sprite {
    *     width(float):
    *     height(float):
    *     alpha(float): 0 - 1
-   *     scale(ratio|{ratioX, ratioY}): (if has scale, disable width and height)
-   *     $ rotate(float): 0 - 2 * Math.PI
+   *     rotation(float): 0 - 360
+   *     $ scale(ratio|{ratioX, ratioY}): (if has scale, disable x, y, width and height)
    *     $ scalePivot({x, y}|string) = 'center':
    *       values: left, right, top, bottom, leftTop, leftBottom, rightTop, rightBottom))
    *   }],
@@ -174,10 +176,9 @@ export default class Sprite extends Laya.Sprite {
    *   afterAnimation(function()) = () => {}: the callback will be call when animation finished
    *   fillMode(string) = 'forwards': specifies how the animation should apply styles to its target before and after its execution
    *      value: 'backwords', 'forwards', 'keep'
-   *   $ selectable(boolean) = false: the sprite can be selected duration the animation
-   *   $ direction(string) = 'normal': specifies whether an animation should play forwads, backwards, or alternating back and forth.
-   *      value: 'alternate', 'reverse', 'alternate-reverse'
-   *   $ iterationCount(integer|'infinite') = 1: specifies the number of times an animation loop should be played before stopping.
+   *   iterationCount(integer|'infinite') = 1: specifies the number of times an animation loop should be played before stopping.
+   *   direction(string) = 'normal': specifies whether an animation should play forwads, backwards, or alternating back and forth.
+   *      value: 'normal', 'alternate', 'reverse', 'alternate-reverse'
    *
    *   $ meaning not implemented
    * }
@@ -210,7 +211,6 @@ export default class Sprite extends Laya.Sprite {
         }
       }
       if (changedValue.scale !== undefined) {
-        // TODO changedValue.scale is array
         startFrame.width = this.width
         startFrame.height = this.height
         startFrame.x = this.x
@@ -266,6 +266,7 @@ export default class Sprite extends Laya.Sprite {
         }
       }
     }
+    console.log(startFrame, diff)
     this._animations.push({
       startFrame,
       diff,
@@ -326,7 +327,7 @@ export default class Sprite extends Laya.Sprite {
       return
     }
     if (animation.afterAnimation) {
-      const temp = afterAnimation
+      const temp = animation.afterAnimation
       animation.afterAnimation = () => {
         this.clearAnimation()
         temp()
@@ -354,17 +355,36 @@ export default class Sprite extends Laya.Sprite {
       console.log('destroied')
       return
     }
-    const {fillMode, startFrame, diff, duration, timeFunction} = animation
+    const {direction, iterationCount, fillMode, startFrame, diff, duration, timeFunction} = animation
     let isFinished = false
     let now = Date.now()
-    if (now >= startTime + duration) {
+    if (iterationCount !== 'infinite' && now >= startTime + duration * iterationCount) {
       isFinished = true
       if (fillMode === 'backwards') {
         now = startTime
       }
     }
-    const p = isFinished ? 1 : timeFunction((now - startTime) / duration)
+    let x
+    if ((now - startTime) % duration === 0) {
+      x = 1
+    } else {
+      x = ((now - startTime) % duration) / duration
+    }
+    if (direction === 'alternate') {
+      if (Math.floor((now - startTime) / duration) & 1) {
+        x = 1 - x
+      }
+    } else if (direction === 'reverse') {
+      x = 1 - x
+    } else if (direction === 'alternate-reverse') {
+      x = 1 - x
+      if (Math.floor((now - startTime) / duration) & 1) {
+        x = 1 - x
+      }
+    }
+    const p = isFinished ? 1 : timeFunction(x)
     const currentFrame = {}
+    let needRedraw = false
     for (const key in startFrame) {
       if (key === 'scale') {
         continue
@@ -390,5 +410,18 @@ export default class Sprite extends Laya.Sprite {
       animation.afterAnimation()
       clearInterval(handler)
     }
+  }
+
+  breathe() {
+    this.playOnce({
+      keyFrames: [{
+        scale: 1,
+      }, {
+        scale: 1.2
+      }],
+      duration: 1000,
+      iterationCount: 'infinite',
+      direction: 'alternate'
+    })
   }
 }

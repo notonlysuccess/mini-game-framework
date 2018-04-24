@@ -1,24 +1,22 @@
 import Panel from './panel'
 import {
   Rect,
-  Circle
+  Circle,
+  Sprite,
 } from 'sprite'
+import Loading from 'sprite/loading'
 import Scale from 'utils/scale'
+import config from 'config'
+import {
+  alphaColor
+} from 'utils'
 
-const RECT = new Scale({
-  x: 100,
-  y: 800,
-  width: 300,
-  height: 300,
-  fillStyle: '#FF0000',
+const LOADING = new Scale({
+  x: config.BASE_SCREEN_WIDTH / 2 - 50,
+  y: config.BASE_SCREEN_HEIGHT / 2 - 50,
+  width: 100,
+  height: 100,
 })
-const CIRCLE = new Scale({
-  x: 100,
-  y: 800,
-  width: 300,
-  height: 300,
-  fillStyle: '#00FF00',
-}, RECT)
 
 export default class AnimationPanel extends Panel {
   constructor() {
@@ -27,15 +25,7 @@ export default class AnimationPanel extends Panel {
   }
 
   _drawPanel() {
-    const rect = new Rect(RECT)
+    const rect = new Loading(LOADING)
     this.addChild(rect)
-    rect.addChild(new Circle(CIRCLE))
-    rect.playOnce({
-      changedValue: {
-        y: -200,
-      },
-      duration: 1000,
-      timeFunction: 'easeOutBounce'
-    })
   }
 }
